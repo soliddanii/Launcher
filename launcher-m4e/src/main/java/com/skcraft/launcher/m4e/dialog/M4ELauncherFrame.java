@@ -15,6 +15,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -48,6 +49,7 @@ import com.skcraft.launcher.InstanceList;
 import com.skcraft.launcher.Launcher;
 import com.skcraft.launcher.M4ELaunchSupervisor;
 import com.skcraft.launcher.dialog.InstanceSettingsDialog;
+import com.skcraft.launcher.dialog.LauncherFrame;
 import com.skcraft.launcher.dialog.ProgressDialog;
 import com.skcraft.launcher.launch.LaunchListener;
 import com.skcraft.launcher.launch.LaunchOptions;
@@ -374,7 +376,7 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				loadInstances();
-				launcher.getUpdateManager().checkForUpdate();
+				launcher.getUpdateManager().checkForUpdate(M4ELauncherFrame.this);
 			}
 		});
 
@@ -703,7 +705,7 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 		
 		this.launchSupervisor.launch(options);
 	}
-
+	
 	private static class LaunchListenerImpl implements LaunchListener {
 		private final WeakReference<M4ELauncherFrame> frameRef;
 		private final Launcher launcher;
@@ -731,7 +733,8 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 
 		@Override
 		public void gameClosed() {
-			launcher.showLauncherWindow();
+			Window newLauncherWindow = launcher.showLauncherWindow();
+			launcher.getUpdateManager().checkForUpdate(newLauncherWindow);
 		}
 	}
 

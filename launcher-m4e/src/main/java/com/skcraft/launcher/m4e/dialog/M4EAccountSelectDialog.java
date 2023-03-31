@@ -233,6 +233,10 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 		accountList.setSelectedIndex(0);
 	}
 
+	private JPanel createContainerPanel() {
+		return new BackgroundPanel("login_background.png", FRAME_WIDTH, FRAME_HEIGHT);
+	}
+	
 	@Override
 	public void dispose() {
 		accountList.setModel(new DefaultListModel<>());
@@ -250,10 +254,6 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 		Persistence.commitAndForget(launcher.getAccounts());
 
 		return dialog.selected;
-	}
-	
-	private JPanel createContainerPanel() {
-		return new BackgroundPanel("login_background.png", FRAME_WIDTH, FRAME_HEIGHT);
 	}
 
 	private void setResult(Session result) {
@@ -277,7 +277,8 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 			return null;
 		});
 
-		ProgressDialog.showProgress(this, future, progress, SharedLocale.tr("login.loggingInTitle"), status);
+		ProgressDialog.showProgress(this, future, progress,
+				SharedLocale.tr("login.loggingInTitle"), status);
 		SwingHelper.addErrorDialogCallback(this, future);
 	}
 
@@ -299,7 +300,8 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 				if (t instanceof AuthenticationException) {
 					if (((AuthenticationException) t).isInvalidatedSession()) {
 						// Just need to log in again
-						LoginDialog.ReloginDetails details = new LoginDialog.ReloginDetails(session.getUsername(), t.getLocalizedMessage());
+						LoginDialog.ReloginDetails details = new LoginDialog.ReloginDetails(session.getUsername(),
+								SharedLocale.tr("login.relogin", t.getLocalizedMessage()));
 						Session newSession = LoginDialog.showLoginRequest(M4EAccountSelectDialog.this, launcher, details);
 
 						setResult(newSession);
@@ -313,7 +315,7 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 		ProgressDialog.showProgress(this, future, SharedLocale.tr("login.loggingInTitle"),
 				SharedLocale.tr("login.loggingInStatus"));
 	}
-	
+
 	@RequiredArgsConstructor
 	private static class RestoreSessionCallable implements Callable<Session>, ProgressObservable {
 		private final LoginService service;
