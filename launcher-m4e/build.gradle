@@ -1,0 +1,26 @@
+plugins {
+	id 'application'
+	id "com.github.johnrengelman.shadow"
+	id 'io.freefair.lombok'
+}
+
+mainClassName = "com.skcraft.launcher.M4ELauncher"
+
+repositories {
+	/*maven {
+		name = 'obw maven'
+		url = 'https://maven.offbeatwit.ch/repository/snapshots'
+	}*/
+	mavenLocal()
+}
+
+dependencies {
+	compile project(':launcher')
+	//compile 'io.github.cottonmc.insubstantial:substance:7.3.1-SNAPSHOT'
+	compile 'br.com.azalim:mcserverping:1.0.4'
+}
+
+shadowJar {
+}
+
+build.dependsOn(shadowJar)

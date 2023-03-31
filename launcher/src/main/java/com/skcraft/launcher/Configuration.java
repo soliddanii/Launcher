@@ -40,6 +40,7 @@ public class Configuration {
     private boolean serverEnabled = false;
     private String serverHost;
     private int serverPort = 25565;
+    private String offlineName;
 
     @Override
     public boolean equals(Object o) {

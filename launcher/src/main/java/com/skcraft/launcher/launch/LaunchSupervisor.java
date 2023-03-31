@@ -37,7 +37,7 @@ import static com.skcraft.launcher.util.SharedLocale.tr;
 @Log
 public class LaunchSupervisor {
 
-    private final Launcher launcher;
+    protected final Launcher launcher;
 
     public LaunchSupervisor(Launcher launcher) {
         this.launcher = launcher;
@@ -115,7 +115,7 @@ public class LaunchSupervisor {
         }
     }
 
-    private void launch(Window window, Instance instance, Session session, final LaunchListener listener) {
+    protected void launch(Window window, Instance instance, Session session, final LaunchListener listener) {
         final File extractDir = launcher.createExtractDir();
 
         // Get the process
