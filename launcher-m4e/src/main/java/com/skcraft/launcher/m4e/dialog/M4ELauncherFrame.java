@@ -49,7 +49,6 @@ import com.skcraft.launcher.InstanceList;
 import com.skcraft.launcher.Launcher;
 import com.skcraft.launcher.M4ELaunchSupervisor;
 import com.skcraft.launcher.dialog.InstanceSettingsDialog;
-import com.skcraft.launcher.dialog.LauncherFrame;
 import com.skcraft.launcher.dialog.ProgressDialog;
 import com.skcraft.launcher.launch.LaunchListener;
 import com.skcraft.launcher.launch.LaunchOptions;
@@ -59,6 +58,7 @@ import com.skcraft.launcher.m4e.swing.ImageButton;
 import com.skcraft.launcher.m4e.swing.ImageHyperlinkButton;
 import com.skcraft.launcher.m4e.swing.LiteButton;
 import com.skcraft.launcher.m4e.swing.M4EInstanceTable;
+import com.skcraft.launcher.m4e.swing.M4EInstanceTableModel;
 import com.skcraft.launcher.m4e.swing.MarqueePanel;
 import com.skcraft.launcher.m4e.swing.RedButton;
 import com.skcraft.launcher.m4e.swing.SquareBox;
@@ -102,7 +102,7 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 	@Getter
 	private final JScrollPane instanceScroll = new JScrollPane(instancesTable);
 	
-	private final InstanceTableModel instancesModel;
+	private final M4EInstanceTableModel instancesModel;
 	
 	private final M4ELaunchSupervisor launchSupervisor;
 
@@ -110,7 +110,7 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 	private final JButton refreshButton = new ImageButton(ResourceUtils.getIcon("updateLinkButton.png"));
 	private final ImageButton optionsButton = new ImageButton(ResourceUtils.getIcon("gear.png", 28, 28), ResourceUtils.getIcon("gearInverted.png", 28, 28));
 	private final JButton selfUpdateButton = new RedButton(SharedLocale.tr("launcher.updateLauncher"));
-	private final ImageButton refreshServer = new ImageButton(ResourceUtils.getIcon("refresh.png", 24, 24), ResourceUtils.getIcon("refreshInverted.png", 24, 24));
+	private final ImageButton refreshServer = new ImageButton(ResourceUtils.getIcon("refresh.png", 20, 20), ResourceUtils.getIcon("refreshInverted.png", 20, 20));
 	private final boolean updateCheck = true; //Sustitudo el checkbox por un booleano. SIEMPRE COMPROBAR ACTUALIZACIONES
 
 	/**
@@ -122,7 +122,7 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 		super(SharedLocale.tr("launcher.title", launcher.getVersion()));
 
 		this.launcher = launcher;
-		this.instancesModel = new InstanceTableModel(launcher.getInstances());
+		this.instancesModel = new M4EInstanceTableModel(launcher.getInstances());
 		this.launchSupervisor = new M4ELaunchSupervisor(launcher);
 
 		initComponents();
@@ -185,8 +185,8 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 		serverArea.setBounds(605, 180, 265, 90);
 
 		refreshServer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		refreshServer.setDisabledIcon(ResourceUtils.getIcon("refreshDisabled.png", 24, 24));
-		refreshServer.setBounds(serverArea.getX() + serverArea.getWidth() - 34, serverArea.getY() + 10, 24, 24);
+		refreshServer.setDisabledIcon(ResourceUtils.getIcon("refreshDisabled.png", 20, 20));
+		refreshServer.setBounds(serverArea.getX() + serverArea.getWidth() - 30, serverArea.getY() + 12, 20, 20);
 		
 		final JLabel statusIcon = new JLabel("");
 		statusIcon.setIcon(ResourceUtils.getIcon("serverOff.png", 24, 24));
@@ -213,7 +213,7 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 		serverVersion.setVisible(true);
 
 		final MarqueePanel onlinePlayers = new MarqueePanel(62, 1);
-		final JLabel message = new JLabel("El servidor está offline");
+		final JLabel message = new JLabel("El servidor est\u00e1 offline");
 		message.setFont(ResourceUtils.getMinecraftFont(12));
 		message.setForeground(Color.WHITE);
 		onlinePlayers.setOpaque(false);

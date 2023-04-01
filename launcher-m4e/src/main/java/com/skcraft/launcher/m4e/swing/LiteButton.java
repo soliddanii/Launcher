@@ -11,6 +11,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import com.skcraft.launcher.m4e.utils.M4EConstants;
+
 public class LiteButton extends JButton implements MouseListener {
 
 	private static final long serialVersionUID = -4843665311305388826L;
@@ -30,7 +32,7 @@ public class LiteButton extends JButton implements MouseListener {
 	private JLabel label = null;
 
 	public LiteButton(String label) {
-		this(label, new Color(220, 220, 220), Color.black, new Color(220, 220, 220), Color.black, new Color(220, 220, 220), Color.black);
+		this(label, M4EConstants.LIGHT, Color.black, new Color(235, 235, 235), Color.black, M4EConstants.LIGHT, Color.black);
 	}
 
 	public LiteButton(String label, Color unclickedBackColor, Color clickedBackColor, Color hoverBackColor,

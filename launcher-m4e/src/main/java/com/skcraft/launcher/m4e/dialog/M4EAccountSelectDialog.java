@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,9 +12,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.concurrent.Callable;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -38,8 +37,10 @@ import com.skcraft.launcher.auth.Session;
 import com.skcraft.launcher.dialog.LoginDialog;
 import com.skcraft.launcher.dialog.ProgressDialog;
 import com.skcraft.launcher.m4e.swing.BackgroundPanel;
+import com.skcraft.launcher.m4e.swing.BlueButton;
 import com.skcraft.launcher.m4e.swing.ImageButton;
 import com.skcraft.launcher.m4e.swing.LiteButton;
+import com.skcraft.launcher.m4e.swing.RedButton;
 import com.skcraft.launcher.m4e.utils.M4EConstants;
 import com.skcraft.launcher.m4e.utils.ResourceUtils;
 import com.skcraft.launcher.persistence.Persistence;
@@ -52,13 +53,10 @@ import lombok.RequiredArgsConstructor;
 public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 7974404018111500358L;
 	
-	private static final int FRAME_HEIGHT = 347;
 	private static final int FRAME_WIDTH = 509;
+	private static final int FRAME_HEIGHT = 302;
 	
 	private final JList<SavedSession> accountList;
-	private final JButton loginButton = new JButton(SharedLocale.tr("accounts.play"));
-	private final JButton cancelButton = new JButton(SharedLocale.tr("button.cancel"));
-	private final JButton offlineButton = new JButton(SharedLocale.tr("login.playOffline"));
 
 	private final Launcher launcher;
 	private Session selected;
@@ -103,66 +101,51 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 		
 		// Account list
 		accountList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		accountList.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		accountList.setBackground(M4EConstants.CHARCOAL_LIGHT);
+		accountList.setCellRenderer(new AccountRenderer());
 		accountList.setLayoutOrientation(JList.VERTICAL);
 		accountList.setVisibleRowCount(0);
-		accountList.setCellRenderer(new AccountRenderer());
 
 		JScrollPane accountPane = new JScrollPane(accountList);
 		accountPane.setBounds(M4EConstants.SPACING, (M4EConstants.SPACING * 2) + 20, 350, 200);
-		
+		accountPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		
 		// Login buttons
 		int linkWidth = FRAME_WIDTH - 350 - (M4EConstants.SPACING * 3);
-		int linkHeight = (200 - (M4EConstants.SPACING * 4)) / 3;
+		int linkHeight = (200 - (M4EConstants.SPACING * 2)) / 3;
 		
 		LiteButton mojangButton = new LiteButton(SharedLocale.tr("accounts.addMojang"));
-		mojangButton.setFont(minecraft.deriveFont(14F));
+		mojangButton.setFont(minecraft.deriveFont(13F));
 		mojangButton.setBounds(350 + (M4EConstants.SPACING * 2), 20 + (M4EConstants.SPACING * 2), linkWidth, linkHeight);
 		mojangButton.setContentAreaFilled(false);
 		mojangButton.setBorderPainted(false);
 		
 		LiteButton microsoftButton = new LiteButton(SharedLocale.tr("accounts.addMicrosoft"));
-		microsoftButton.setFont(minecraft.deriveFont(14F));
+		microsoftButton.setFont(minecraft.deriveFont(13F));
 		microsoftButton.setBounds(350 + (M4EConstants.SPACING * 2), 20 + (M4EConstants.SPACING * 3) + linkHeight, linkWidth, linkHeight);
 		microsoftButton.setContentAreaFilled(false);
 		microsoftButton.setBorderPainted(false);
 		
 		LiteButton removeButton = new LiteButton(SharedLocale.tr("accounts.removeSelected"));
-		removeButton.setFont(minecraft.deriveFont(14F));
+		removeButton.setFont(minecraft.deriveFont(13F));
 		removeButton.setBounds(350 + (M4EConstants.SPACING * 2), 20 + (M4EConstants.SPACING * 4) + (linkHeight * 2), linkWidth, linkHeight);
 		removeButton.setContentAreaFilled(false);
 		removeButton.setBorderPainted(false);
 		
+		// Play buttons
+		BlueButton loginButton = new BlueButton(SharedLocale.tr("accounts.play"));
+		loginButton.setBounds(FRAME_WIDTH - linkWidth - M4EConstants.SPACING, 220 + (M4EConstants.SPACING * 4), linkWidth, 40);
+		loginButton.setFont(minecraft.deriveFont(14F));
+		loginButton.setContentAreaFilled(false);
+		loginButton.setBorderPainted(false);
 		
-		
-		
-		
-		
-		
-		
-		
-		
-
-		
-
-		loginButton.setFont(loginButton.getFont().deriveFont(Font.BOLD));
-		loginButton.setMargin(new Insets(0, 10, 0, 10));
-
-		//Start Buttons
-		/*buttonsPanel.setBorder(BorderFactory.createEmptyBorder(26, 13, 13, 13));
-		if (launcher.getConfig().isOfflineEnabled()) {
-			buttonsPanel.addElement(offlineButton);
-		}
-		buttonsPanel.addGlue();
-		buttonsPanel.addElement(cancelButton);
-		buttonsPanel.addElement(loginButton);*/
-
-		//Login Buttons
-
-
-
-		
-		
+		RedButton offlineButton = new RedButton(SharedLocale.tr("login.playOffline"));
+		offlineButton.setBounds(FRAME_WIDTH - (linkWidth * 2) - (M4EConstants.SPACING * 2), 220 + (M4EConstants.SPACING * 4), linkWidth, 40);
+		offlineButton.setEnabled(launcher.getConfig().isOfflineEnabled());
+		offlineButton.setFont(minecraft.deriveFont(14F));
+		offlineButton.setContentAreaFilled(false);
+		offlineButton.setBorderPainted(false);
 		
 		
 		Container contentPane = getContentPane();
@@ -174,43 +157,19 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 		contentPane.add(mojangButton);
 		contentPane.add(microsoftButton);
 		contentPane.add(removeButton);
+		contentPane.add(loginButton);
+		contentPane.add(offlineButton);
 		contentPane.add(container);
 		
 		
-		closeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-			}
-		});
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		closeButton.addActionListener(e -> dispose());
 		
 		loginButton.addActionListener(ev -> attemptExistingLogin(accountList.getSelectedValue()));
-		cancelButton.addActionListener(ev -> dispose());
 		
-		offlineButton.addActionListener(ev -> setResult(new OfflineSession(launcher.getProperties().getProperty("offlinePlayerName"))));
+		offlineButton.addActionListener(ev -> setResult(new OfflineSession(launcher.getConfig().getOfflineName())));
 		
 		mojangButton.addActionListener(ev -> {
-			Session newSession = LoginDialog.showLoginRequest(this, launcher);
+			Session newSession = M4ELoginDialog.showLoginRequest(this, launcher);
 			
 			if (newSession != null) {
 				launcher.getAccounts().update(newSession.toSavedSession());
@@ -234,7 +193,7 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 	}
 
 	private JPanel createContainerPanel() {
-		return new BackgroundPanel("login_background.png", FRAME_WIDTH, FRAME_HEIGHT);
+		return new BackgroundPanel("optionsBackground.png", FRAME_WIDTH, FRAME_HEIGHT);
 	}
 	
 	@Override
@@ -302,7 +261,7 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 						// Just need to log in again
 						LoginDialog.ReloginDetails details = new LoginDialog.ReloginDetails(session.getUsername(),
 								SharedLocale.tr("login.relogin", t.getLocalizedMessage()));
-						Session newSession = LoginDialog.showLoginRequest(M4EAccountSelectDialog.this, launcher, details);
+						Session newSession = M4ELoginDialog.showLoginRequest(M4EAccountSelectDialog.this, launcher, details);
 
 						setResult(newSession);
 					}
@@ -339,25 +298,28 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 
 	private static class AccountRenderer extends JLabel implements ListCellRenderer<SavedSession> {
 		public AccountRenderer() {
+			setFont(ResourceUtils.getMinecraftFont(14));
 			setHorizontalAlignment(LEFT);
 		}
 
 		@Override
 		public Component getListCellRendererComponent(JList<? extends SavedSession> list, SavedSession value, int index, boolean isSelected, boolean cellHasFocus) {
+			setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, M4EConstants.CHARCOAL_LIGHT));
 			setText(value.getUsername());
+			setIconTextGap(10);
 			if (value.getAvatarImage() != null) {
 				setIcon(new ImageIcon(value.getAvatarImage()));
 			} else {
 				setIcon(SwingHelper.createIcon(Launcher.class, "default_skin.png", 32, 32));
 			}
-
+			
 			if (isSelected) {
 				setOpaque(true);
-				setBackground(list.getSelectionBackground());
-				setForeground(list.getSelectionForeground());
+				setBackground(M4EConstants.LIGHT);
+				setForeground(M4EConstants.CHARCOAL);
 			} else {
 				setOpaque(false);
-				setForeground(list.getForeground());
+				setForeground(M4EConstants.LIGHT);
 			}
 
 			return this;

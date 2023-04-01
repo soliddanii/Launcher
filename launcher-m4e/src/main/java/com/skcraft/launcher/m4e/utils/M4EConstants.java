@@ -11,6 +11,8 @@ public class M4EConstants {
 	// ########################## COLORS ###########################
 	public static final Color TRANSPARENT = new Color(45, 45, 45, 160);
 	public static final Color CHARCOAL = new Color(45, 45, 45);
+	public static final Color CHARCOAL_LIGHT = new Color(85, 85, 85);
+	public static final Color LIGHT = new Color(215, 215, 215);
 	
 	// ###################### LAUNCHER FRAMES ######################
 	public static final int SPACING = 7;
