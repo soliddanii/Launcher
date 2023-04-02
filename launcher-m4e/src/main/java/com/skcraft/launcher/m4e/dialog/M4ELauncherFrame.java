@@ -24,8 +24,8 @@ import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
@@ -67,21 +67,16 @@ import com.skcraft.launcher.m4e.utils.M4EConstants;
 import com.skcraft.launcher.m4e.utils.ResourceUtils;
 import com.skcraft.launcher.swing.ActionListeners;
 import com.skcraft.launcher.swing.DoubleClickToButtonAdapter;
-import com.skcraft.launcher.swing.InstanceTableModel;
 import com.skcraft.launcher.swing.PopupMouseAdapter;
 import com.skcraft.launcher.swing.SwingHelper;
 import com.skcraft.launcher.swing.WebpagePanel;
 import com.skcraft.launcher.util.SharedLocale;
 import com.skcraft.launcher.util.SwingExecutor;
 
-import br.com.azalim.mcserverping.MCPing;
-import br.com.azalim.mcserverping.MCPingOptions;
-import br.com.azalim.mcserverping.MCPingResponse;
-import br.com.azalim.mcserverping.MCPingResponse.Players;
-import br.com.azalim.mcserverping.MCPingResponse.Version;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.java.Log;
+import net.lenni0451.mcping.MCPing;
 
 @Log
 public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMotionListener {
@@ -372,41 +367,18 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 
 		instancesTable.addMouseListener(new DoubleClickToButtonAdapter(launchButton));
 
-		refreshButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				loadInstances();
-				launcher.getUpdateManager().checkForUpdate(M4ELauncherFrame.this);
-			}
+		refreshButton.addActionListener(e -> {
+			loadInstances();
+			launcher.getUpdateManager().checkForUpdate(M4ELauncherFrame.this);
 		});
 
-		selfUpdateButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				launcher.getUpdateManager().performUpdate(M4ELauncherFrame.this);
-			}
-		});
+		selfUpdateButton.addActionListener(e -> launcher.getUpdateManager().performUpdate(M4ELauncherFrame.this));
 
-		optionsButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showOptions();
-			}
-		});
+		optionsButton.addActionListener(e -> showOptions());
 
-		launchButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				launch();
-			}
-		});
+		launchButton.addActionListener(e -> launch());
 		
-		exit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
+		exit.addActionListener(e -> System.exit(0));
 
 		instancesTable.addMouseListener(new PopupMouseAdapter() {
 			@Override
@@ -451,76 +423,58 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 	 *
 	 * @param statusIcon the status icon (on/off)
 	 */
-	private void refreshServerStatus(final JLabel statusIcon, final JLabel statusText, final JLabel serverVersion,
-			final JLabel onlinePlayers) {
+	private void refreshServerStatus(final JLabel statusIcon, final JLabel statusText, final JLabel serverVersion, final JLabel onlinePlayers) {
 
+		// https://github.com/Lenni0451/MCPing
+		log.info("Refreshing server status");
+		
 		refreshServer.setEnabled(false);
-
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-
-				log.info("Refreshing server status");
-
-				MCPingOptions options = MCPingOptions.builder().hostname("minecraft4ever.es").port(25600).timeout(1000)
-						.build();
-
-				MCPingResponse reply;
-
-				try {
-					reply = MCPing.getPing(options);
-
-					// Set the status icon
-					statusIcon.setIcon(ResourceUtils.getIcon("serverOn.png", 24, 24));
-
-					// Set the status text
-					Players players = reply.getPlayers();
-					statusText.setText("ONLINE       " + players.getOnline() + "/" + players.getMax());
-
-					// Set the server information
-					Version version = reply.getVersion();
-					serverVersion.setText(version.getName().replace("Paper ", ""));
-
-					String text = "No hay jugadores online";
-
-					if (players.getSample() != null && !players.getSample().isEmpty()) {
-						String jugadores = players.getSample().stream().map(player -> player.getName())
-								.collect(Collectors.joining(",  "));
-						text = "Jugadores:  " + jugadores;
-					}
-
-					// Set the online players message
-					onlinePlayers.setText(text);
-				} catch (IOException ex) {
-					log.warning(options.getHostname() + " is down or unreachable.");
-
-					// Set the status icon
-					statusIcon.setIcon(ResourceUtils.getIcon("serverOff.png", 24, 24));
-					// Set the status text
-					statusText.setText("OFFLINE");
-					// Set the server information
-					serverVersion.setText("");
-					// Set the online players message
-					onlinePlayers.setText("El servidor está offline");
-				}
-
-				log.info("Server status refreshed");
-
-				// Cooldown for the button in seconds
-				int BUTTON_COOLDOWN = 4;
-
-				try {
-					Thread.sleep(BUTTON_COOLDOWN * 1000L);
-				} catch (InterruptedException ignored) {
-					log.warning("Refresh button cooldown failed");
-				}
-
-				refreshServer.setEnabled(true);
-
+		
+		MCPing.pingModern().address(M4EConstants.SERVER_IP, 25600).noResolve().timeout(1000, 1000)
+		.responseHandler(response -> {
+			// Set the status icon
+			statusIcon.setIcon(ResourceUtils.getIcon("serverOn.png", 24, 24));
+			
+			// Set the status text
+			statusText.setText("ONLINE       " + response.players.online + "/" + response.players.max);
+			
+			// Set the server information
+			serverVersion.setText(response.version.name.replace("Paper ", ""));
+			
+			String text = "No hay jugadores online";
+			
+			
+			if (response.players.sample != null && response.players.sample.length > 0) {
+				String jugadores = Arrays.asList(response.players.sample).stream().map(p -> p.name).collect(Collectors.joining(",  "));
+				text = "Jugadores:  " + jugadores;
 			}
+			
+			// Set the online players message
+			onlinePlayers.setText(text);
+		}).exceptionHandler(t -> {
+			log.warning(M4EConstants.SERVER_IP + " is down or unreachable.");
 
-		}).start();
+			// Set the status icon
+			statusIcon.setIcon(ResourceUtils.getIcon("serverOff.png", 24, 24));
+			// Set the status text
+			statusText.setText("OFFLINE");
+			// Set the server information
+			serverVersion.setText("");
+			// Set the online players message
+			onlinePlayers.setText("El servidor está offline");
+		}).finishHandler(response -> {
+			log.info("Server status refreshed");
+			
+			int BUTTON_COOLDOWN = 4;
+
+			try {
+				Thread.sleep(BUTTON_COOLDOWN * 1000L);
+			} catch (InterruptedException ignored) {
+				log.warning("Refresh button cooldown failed");
+			}
+			
+			refreshServer.setEnabled(true);
+		}).getAsync();
 
 	}
 

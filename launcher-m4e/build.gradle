@@ -8,17 +8,12 @@ application {
 }
 
 repositories {
-    /*maven {
-        name = 'obw maven'
-        url = 'https://maven.offbeatwit.ch/repository/snapshots'
-    }*/
-    mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
     implementation project(path: ':launcher')
-    //implementation 'io.github.cottonmc.insubstantial:substance:7.3.1-SNAPSHOT'
-    implementation 'br.com.azalim:mcserverping:1.0.4'
+    implementation 'net.lenni0451:MCPing:1.0.0'
 }
 
 shadowJar {
