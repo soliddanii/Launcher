@@ -320,7 +320,7 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals("pendingUpdate")) {
-					selfUpdateButton.setVisible((Boolean) evt.getNewValue());
+					selfUpdateButton.setEnabled((Boolean) evt.getNewValue());
 				}
 			}
 		});
