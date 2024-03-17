@@ -28,6 +28,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.skcraft.concurrency.ObservableFuture;
 import com.skcraft.concurrency.ProgressObservable;
 import com.skcraft.concurrency.SettableProgress;
+import com.skcraft.launcher.Configuration;
 import com.skcraft.launcher.Launcher;
 import com.skcraft.launcher.auth.AuthenticationException;
 import com.skcraft.launcher.auth.LoginService;
@@ -231,6 +232,13 @@ public class M4EAccountSelectDialog extends M4EDialog implements MouseListener, 
 			if (newSession != null) {
 				launcher.getAccounts().update(newSession.toSavedSession());
 				setResult(newSession);
+
+				// Set offline enabled flag to true
+				Configuration config = launcher.getConfig();
+				if (!config.isOfflineEnabled()) {
+					config.setOfflineEnabled(true);
+					Persistence.commitAndForget(config);
+				}
 			}
 
 			return null;

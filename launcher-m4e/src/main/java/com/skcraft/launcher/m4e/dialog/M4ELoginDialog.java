@@ -5,8 +5,6 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Window;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -49,7 +47,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * The login dialog.
  */
-public class M4ELoginDialog extends M4EDialog implements MouseListener, MouseMotionListener {
+public class M4ELoginDialog extends M4EDialog {
 
 	private static final long serialVersionUID = 5553905344424894886L;
 	
