@@ -430,7 +430,7 @@ public class M4ELauncherFrame extends JFrame implements MouseListener, MouseMoti
 		
 		refreshServer.setEnabled(false);
 		
-		MCPing.pingModern().address(M4EConstants.SERVER_IP, 25600).noResolve().timeout(1000, 1000)
+		MCPing.pingModern().address(M4EConstants.SERVER_IP, 25624).noResolve().timeout(1000, 1000)
 		.responseHandler(response -> {
 			// Set the status icon
 			statusIcon.setIcon(ResourceUtils.getIcon("serverOn.png", 24, 24));
