@@ -40,7 +40,25 @@ public class WindowsRuntimeFinder implements PlatformRuntimeFinder {
 
 	@Override
 	public List<File> getCandidateJavaLocations() {
-		return Collections.emptyList();
+		ArrayList<File> entries = Lists.newArrayList();
+
+		String javaHome = System.getenv("JAVA_HOME");
+		if (javaHome != null) {
+			entries.add(new File(javaHome));
+		}
+
+		File[] runtimesList = new File(System.getenv("ProgramFiles") + File.separator + "Java").listFiles();
+		if (runtimesList != null) {
+			Arrays.stream(runtimesList).map(file -> {
+				try {
+					return file.getCanonicalFile();
+				} catch (IOException exception) {
+					return file;
+				}
+			}).distinct().forEach(entries::add);
+		}
+
+		return entries;
 	}
 
 	@Override
