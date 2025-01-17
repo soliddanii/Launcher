@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -55,7 +53,7 @@ import lombok.NonNull;
 /**
  * A dialog to modify configuration options.
  */
-public class M4EConfigurationDialog extends M4EDialog implements MouseListener, MouseMotionListener{
+public class M4EConfigurationDialog extends M4EDialog {
 
 	private static final long serialVersionUID = -8477694865350149534L;
 	
@@ -175,7 +173,6 @@ public class M4EConfigurationDialog extends M4EDialog implements MouseListener, 
 		javajvmPath.setBounds(20, javaTitle.getY() + javaTitle.getHeight() + 10, 200, 25);
 		javajvmPath.setForeground(Color.WHITE);
 		javajvmPath.setHorizontalAlignment(SwingConstants.LEFT);
-		//jvmRuntime.setHorizontalAlignment(SwingConstants.RIGHT);
 		jvmRuntime.setFont(minecraft.deriveFont(12F));
 		jvmRuntime.setBounds(javaArea.getX() + javaArea.getWidth() - 130, javajvmPath.getY(), 120, 25);
 
